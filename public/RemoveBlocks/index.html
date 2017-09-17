@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <head>
 <title>Remove Blocks</title>
 <meta charset='utf-8'/>
@@ -108,11 +108,12 @@ text-align:center;
   margin-left:255px;
 }
 </style>
+<script src="/app.js"></script>
 <script type="text/javascript">
 'use strict'
 
 var points=0; //Кол-во очков игрока
-var seconds = 60; //Время (в секундах)
+var seconds = 10; //Время (в секундах)
 
 var NamelessPlayerCount=0;//Количество безымянных игроков
 var Color=["red","green","blue","gold","magenta"]; //Цвета кубиков
@@ -141,7 +142,7 @@ function Start()//Начало Игры
 	      newBlock.style.float="left";
 	      gameField.appendChild(newBlock);
        }
-       seconds=60; //Устанавливаем время
+       seconds=10; //Устанавливаем время
        TIMER(); // Включаем таймер
    }
    else 
@@ -293,6 +294,7 @@ function SetName()//Записать игрока в таблицу резуль
 
 
   SetData(PlayerName.value,points);  
+  
   //Вернуть начальные настройки
   gameOverDiv.style.visibility="hidden";
   PlayerName.value="";
