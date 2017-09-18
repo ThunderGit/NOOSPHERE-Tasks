@@ -59,7 +59,7 @@ border:1px solid #000;
 margin-top:20px;
 margin-right:70px;
 float:left;
-font-size:32px;
+font-size:30px;
 text-align:center;
 }
 
@@ -108,24 +108,42 @@ text-align:center;
   margin-left:255px;
 }
 </style>
-<script src="/app.js"></script>
 <script type="text/javascript">
 'use strict'
 
 var points=0; //Кол-во очков игрока
-var seconds = 10; //Время (в секундах)
+var seconds = 60; //Время (в секундах)
 
 var NamelessPlayerCount=0;//Количество безымянных игроков
 var Color=["red","green","blue","gold","magenta"]; //Цвета кубиков
 var Removed=new Array(); //Массив "убранных кубиков"
 
+function GetRecord()
+{
+   var TableResult=document.getElementById("record");
+  TableResult.innerHTML="<u><b>Result Table</b></u><br/>";
+    var xhr = new XMLHttpRequest();
+      
+    xhr.open("GET", '/ResultsREC.txt');
+    //xhr.setRequestHeader('Content-Type', 'application/JSON')
+    xhr.onreadystatechange = function() {
+          if (this.readyState != 4) return;
+          TableResult.innerHTML+=this.responseText;
+          //console.log(this);
+         };
+
+    xhr.send();
+}
 function Start()//Начало Игры
 {
-
+  
   var StartPause=document.getElementById("start");
   
   if(StartPause.value=="Start") // Старт
    {
+       
+       GetRecord();
+
        StartPause.value="Pause";
        var gameField=document.getElementById('field_id');
        for(var i=0;i<150;i++) //Создаём кубики
@@ -290,7 +308,8 @@ function SetName()//Записать игрока в таблицу резуль
     PlayerName.value="Player"+ (++NamelessPlayerCount);
   }
 
-  TableResult.innerHTML+=" <br/> "+PlayerName.value+": "+points;
+  
+  TableResult.innerHTML+=PlayerName.value+": "+points+"<br/> ";
 
 
   SetData(PlayerName.value,points);  
