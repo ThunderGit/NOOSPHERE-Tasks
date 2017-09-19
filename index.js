@@ -1,10 +1,9 @@
-const http=require("http");
-const fs=require("fs");
+var http = require('http');
+var fs = require('fs');
 var path = require('path');
+
 var fileName="./Results1.json";
 var fileNameRec="./ResultsREC.txt";
-
-const server=http.createServer();
 
 const types={
 	'.js':{contentType:'text/javascript'},
@@ -14,29 +13,30 @@ const types={
 	'.png':{contentType:'image/png'},
 	default:{contentType:'text/html'}
 };
-server.on('request',(request,response)=> {
+
+http.createServer(function (request, response) {
 
 const {method,url,headers} = request;
 
 if(method==='POST'){
-	let postData="";
-	request.on('data',data=>{
+    let postData="";
+    request.on('data',data=>{
         postData+=data;
-	});
-	request.on('end',()=>{
-		processPost(request,response,postData);
-	});
+    });
+    request.on('end',()=>{
+        processPost(request,response,postData);
+    });
 }else{
-	processGet(request,response);
+    processGet(request,response);
 }
 
 function processPost(request,response,postData){
-	let data={};
-	try{ 
+    let data={};
+    try{ 
       data = JSON.parse(postData);
       response.statusCode=201;
      
-      fs.readFile("./Results1.json", (err, result) => {
+     fs.readFile(fileName, (err, result) => {
     if (err) {
       console.log(err);
     }
@@ -51,53 +51,52 @@ function processPost(request,response,postData){
             console.log(err);
           } else {
         console.log("File Saved!");
+
+        getTop10();
+        console.log("Resorted");
       }
     });
     
   });
-      
-       
+
+
      } catch(e){
         response.statusCode=400;
       }
-	console.log("\nPOST = ", data.name,data.pts);
-	
-	response.end();
+    console.log("\nPOST = ", data.name,data.pts);
+    
+    response.end();
 }
 
 function getTop10() {
 
-  fs.readFile("./Results1.json", (err, result) => {
+   fs.readFile(fileName, (err, result) => {
     if (err) {
       console.log(err);
     }
 
-    //result=sortAndProcess(result,"Points");
-    let data = JSON.parse(result); // То что нужно
-    //data=JSON.stringify(data);
-    //data=JSON.parse(data);
-    data = sortAndProcess(data); // sort, find, etc...
-    //console.log(data);
-    
+    let data = JSON.parse(result);
+
+    data = sortAndProcess(data); 
   });
 
 }
 
 function sortAndProcess(jsObj){
-  	var sortPoints = [];
-  	var sortNames=[];
-  	for(var i=0;i<jsObj.length ;i++)
-  	{
-		sortPoints.push(parseInt(jsObj[i].Points));
-		sortNames.push(jsObj[i].PlayerName);
-	}
-	for(var i=0;i<sortPoints.length;i++)
-	{
-		for(var j=0;j<sortPoints.length-1;j++)
-		{
+    var sortPoints = [];
+    var sortNames=[];
+    for(var i=0;i<jsObj.length ;i++)
+    {
+        sortPoints.push(parseInt(jsObj[i].Points));
+        sortNames.push(jsObj[i].PlayerName);
+    }
+    for(var i=0;i<sortPoints.length;i++)
+    {
+        for(var j=0;j<sortPoints.length-1;j++)
+        {
           if(sortPoints[j]<sortPoints[j+1]){
 
-          	var temp=sortPoints[j];
+            var temp=sortPoints[j];
             sortPoints[j]=sortPoints[j+1];
             sortPoints[j+1]=temp;
 
@@ -105,82 +104,70 @@ function sortAndProcess(jsObj){
             sortNames[j]=sortNames[j+1];
             sortNames[j+1]=temp;
           }
-		}
-	}
-	var recList;;
-	var size=10;
-	if(size>sortPoints.length) {
-		size=sortPoints.length;
-	}
-	for(var i=0;i<10 ;i++)
-  	{
-	       recList+=sortNames[i]+": "+sortPoints[i]+"<br>\n";
-	}
-	recList=recList.substring(9);
-	console.log(recList);
-	 fs.writeFile(fileNameRec, recList,'utf8', function readFileCallback(err, data){
-         		if (err){
-            		console.log(err);
-          		} else {
-        		console.log("File Saved!");
-      		}
-    	});	
+        }
+    }
+    var recList;;
+    var size=10;
+    if(size>sortPoints.length) {
+        size=sortPoints.length;
+    }
+    for(var i=0;i<10 ;i++)
+    {
+           recList+=sortNames[i]+": "+sortPoints[i]+"<br>\n";
+    }
+    recList=recList.substring(9);
+    console.log(recList);
+     fs.writeFile(fileNameRec, recList,'utf8', function readFileCallback(err, data){
+                if (err){
+                    console.log(err);
+                } else {
+                console.log("File Saved!");
+            }
+        }); 
 
 }
-
-// function escapeSpecialChars(jsonString) {
-
-//             return jsonString.replace(/\n/g, "\\n")
-//                 .replace(/\r/g, "\\r")
-//                 .replace(/\t/g, "\\t")
-//                 .replace(/\f/g, "\\f");
-
-// }
 
 function processGet(request,response){
-//console.log('Request= ${method},${url}');
-// console.log(headers);
-	let url = request.url;
-	let fileExt = path.extname(url);
-
-	  if(url=="/Results1.json"){
-		getTop10((err, top10data) => {
-			  if (err) {
-				  console.log('Error happened!');
-			  } else {
-
-				  console.log('Top 10 results:', top10data);
-			  
-			      response.write(top10Data.toString());
-			      response.end();
-			  }
-	 	});
-	  }
-	else{
-	    let responseParams=types[fileExt]||types.default;
+console.log(request.url+"\n");
 
 
-	    response.setHeader("Content-Type",responseParams.contentType);
+var filePath = '.' + request.url;
 
+if (filePath == './'||filePath == './public/RemoveBlocks/index.html?')
+    filePath = './public/RemoveBlocks/index.html';
 
-	    let filepath="."+url;
-		if(filepath==="./"){
+if(filePath=='./public/RemoveBlocks/About.html?')
+    filePath = './public/RemoveBlocks/About.html';
 
-			filepath="./public/RemoveBlocks/index.html";
-		}
+let fileExt = path.extname(request.url);
+let url = request.url;
 
-	    console.log(filepath);
+ if(url==fileNameRec.substring(1)){
+    getTop10();
+} 
 
-		let readStream=fs.createReadStream(filepath);
-		readStream.pipe(response);
-        readStream.on('error', function() {
-            response.statusCode = 404;
-			response.end();
-        });
-	}
+let responseParams=types[fileExt]||types.default;
 
-}
-//response.end();
+response.setHeader("Content-Type",responseParams.contentType);
+
+fs.readFile(filePath, function(error, content) {
+    if (error) {
+        if(error.code == 'ENOENT'){
+           response.writeHead(400);
+            response.end('<h1>ERROR 404</h1>\n <p>Page Not Found</p>\n');
+            response.end();
+        }
+        else {
+            response.writeHead(500);
+            response.end('Sorry, check with the site admin for error\n');
+            response.end(); 
+        }
+    }
+    else {
+        response.writeHead(200, { 'Content-Type': responseParams.contentType });
+        response.end(content, 'utf-8');
+    }
 });
 
-server.listen(8080);
+}
+}).listen(8080);
