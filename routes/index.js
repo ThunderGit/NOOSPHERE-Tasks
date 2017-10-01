@@ -11,7 +11,6 @@ var indexController=require('../controllers/index_controller.js');
 // 		res.redirect('auth');
 // 	}
 // }
-/* GET users listing. */
 
 router.get('/', indexController.index);
 router.post('/', indexController.save);
