@@ -1,0 +1,35 @@
+<script>
+function checkSignIn()
+{ 
+
+var p1=document.getElementById('pass_field');
+var LOGIN=document.getElementById('login');
+
+ 	if(NAME.value==""||p1.value=="")
+ 	{
+   		alert('Set the empty fields, Please!');
+   		return false;
+ 	}
+ 	else
+ 	{
+   		return true;
+	}
+         
+}
+</script> 
+<form class=""  onsubmit="return checkSignIn()"  method="POST">
+	<div class="">
+		<label for="login_field">Login:</label>
+		<input type="text" name="login" id="login_field">
+	</div>
+	<div class="">
+		<label for="pass_field">Password:</label>
+		<input type="password" name="pass_field" id="pass_field">
+	</div>
+	<div>
+	<a href="/">
+		<input type="button"  value="Sign In" name="">
+	</a>
+	</div>
+	<p>Not Registered yet? So, <a href="/auth">Sign Up here</a></p>
+</form>

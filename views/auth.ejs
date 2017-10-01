@@ -1,0 +1,73 @@
+<script>
+function checkPass()
+{ 
+
+var p1=document.getElementById('pass_field');
+var p2=document.getElementById('pass_field_subm');
+var NAME=document.getElementById('name');
+var LOGIN=document.getElementById('login');
+var pattern = new RegExp(/(?=^.{7,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/);
+
+ 	if(NAME.value==""||LOGIN.value=="")
+ 	{
+   		alert('Set the empty fields, Please!');
+   		return false;
+ 	}
+ 	else
+ 	{
+   		if(p1.value!="")
+    	{
+    		if( pattern.test(p1.value)==true)
+    		{
+        		if(p1.value==p2.value)
+				{
+	   				return true;
+				}
+				else
+				{
+	   	   			alert('Password submit error!!!');
+           			return false; 
+				}
+    		}
+    		else 
+    		{      
+      			alert('Password must consist of minimum 7 characters and contain characters of different cases and numbers too!');
+           		return false;     
+    		}
+ 
+  		}
+  		else
+  		{
+         	alert('Set Password!');
+           	return false;
+  		}  
+	}
+         
+}
+</script> 
+
+<form class=""  onsubmit="onsubmit="return checkPass()""  method="POST"><!--  -->
+	<div class="">
+		<label for="name_field">Name:</label>
+		<input type="text" name="name" id="name_field">
+	</div>
+	<div class="">
+		<label for="login_field">Login:</label>
+		<input type="text" name="login" id="login_field">
+	</div>
+	<div class="">
+		<label for="pass_field">Password:</label>
+		<input type="password" name="pass" id="pass_field">
+	</div>
+
+	<div class="">
+		<label for="pass_field_subm">Submit Password:</label>
+		<input type="password" name="pass_subm" id="pass_field_subm">
+	</div>
+	<div>
+	<a href="/">
+		<input type="button"  value="Sign Up" name="">
+	</a>
+	</div>
+	<p>Already Registered? So, <a href="/login">Sign In here</a></p>
+</form>
