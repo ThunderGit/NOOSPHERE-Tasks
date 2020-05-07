@@ -1,2 +1,2 @@
 # NOOSPHERE-Tasks
-Home tasks for FullStack JavaScript programm
+Home tasks for FullStack JavaScript program
